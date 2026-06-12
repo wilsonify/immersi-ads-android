@@ -31,18 +31,18 @@ class ProgressViewModel(
             combine(
                 userPreferences.streakCount,
                 userPreferences.totalAdsWatched,
-                userPreferences.targetLanguage
-            ) { streak, adsWatched, targetLang ->
-                Triple(streak, adsWatched, targetLang)
-            }.collect { (streak, adsWatched, targetLang) ->
-                val vocabCount = vocabularyRepository.getVocabularyCount()
-                _uiState.value = _uiState.value.copy(
+                userPreferences.targetLanguage,
+                vocabularyRepository.getAllVocabulary()
+            ) { streak, adsWatched, targetLang, vocabularyItems ->
+                ProgressUiState(
                     streakCount = streak,
                     totalAdsWatched = adsWatched,
-                    vocabularyCount = vocabCount,
+                    vocabularyCount = vocabularyItems.size,
                     targetLanguage = targetLang,
                     isLoading = false
                 )
+            }.collect { state ->
+                _uiState.value = state
             }
         }
     }
