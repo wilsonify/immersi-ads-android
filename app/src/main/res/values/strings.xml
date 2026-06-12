@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">ImmersiAds</string>
+    <string name="tagline">Learn a new language through authentic advertisements</string>
+    <string name="welcome_title">Welcome to ImmersiAds</string>
+    <string name="welcome_description">Learn a new language naturally by watching short advertisements at your own pace, with interactive translations and vocabulary reinforcement built into every clip.</string>
+    <string name="select_native_language">What\'s your native language?</string>
+    <string name="select_target_language">What language do you want to learn?</string>
+    <string name="feed_title">Advertisement Feed</string>
+    <string name="vocabulary_title">My Vocabulary</string>
+    <string name="progress_title">My Progress</string>
+    <string name="settings_title">Settings</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+    <string name="save_to_vocabulary">Save to Vocabulary</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="playback_speed">Playback Speed</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="day_streak">Day Streak</string>
+    <string name="ads_watched">Ads Watched</string>
+    <string name="words_saved">Words Saved</string>
+</resources>
