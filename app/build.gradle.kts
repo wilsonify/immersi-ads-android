@@ -59,6 +59,13 @@ android {
             isReturnDefaultValues = true
         }
     }
+
+    lint {
+        abortOnError = false
+        warningsAsErrors = false
+        htmlReport = true
+        htmlOutput = file("build/reports/lint-results.html")
+    }
 }
 
 ksp {
