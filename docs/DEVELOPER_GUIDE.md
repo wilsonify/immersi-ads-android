@@ -318,6 +318,8 @@ sealed class Screen(val route: String) {
 | `adb: device not found` | Emulator not running or still booting | Run `adb devices` to confirm; wait for boot with `adb wait-for-device` |
 | `adb: failed to install: device is still booting` | Emulator not fully started | Wait for `sys.boot_completed=1`: `adb shell getprop sys.boot_completed` |
 | `Emulator: Could not initialize DirectSoundCapture` | No audio driver (headless) | Safe to ignore; add `-no-audio` to suppress |
+| `Build fails with: 25.0.3 / IllegalArgumentException` | JDK 25 used instead of JDK 17 | Set `JAVA_HOME` to JDK 17 install path; the Kotlin compiler used by AGP 8.7.0 cannot parse JDK 25's version string |
+| `SDK XML version 4 warning during build` | Newer SDK tools than AGP expects | Harmless warning; update AGP to latest or ignore |
 
 ---
 

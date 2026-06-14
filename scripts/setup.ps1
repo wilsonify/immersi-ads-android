@@ -15,18 +15,22 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Step "Java"
 $javaVer = Get-JavaVersion
 if ($javaVer) {
-    if ($javaVer -ge 17) {
+    if ($javaVer -ge 25) {
+        Write-Warning "Java $javaVer found - JDK 25+ breaks the Kotlin compiler used by AGP 8.7.0"
+        $WARN++
+        Write-Action "Install JDK 17 from https://adoptium.net/ and set JAVA_HOME to that path"
+    } elseif ($javaVer -ge 17) {
         Write-Success "Java $javaVer found"
         $PASS++
     } else {
         Write-Warning "Java $javaVer found, but 17+ is required"
         $WARN++
-        Write-Action "Install JDK 17 or later from https://adoptium.net/"
+        Write-Action "Install JDK 17 from https://adoptium.net/"
     }
 } else {
     Write-Error "Java not found"
     $FAIL++
-    Write-Action "Install JDK 17+ from https://adoptium.net/"
+    Write-Action "Install JDK 17 from https://adoptium.net/"
     Write-Action "After install, set JAVA_HOME environment variable"
 }
 

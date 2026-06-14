@@ -21,18 +21,22 @@ echo ""
 echo "--- Java ---"
 JAVA_VER=$(get_java_major_version)
 if [ -n "$JAVA_VER" ]; then
-    if [ "$JAVA_VER" -ge 17 ]; then
+    if [ "$JAVA_VER" -ge 25 ]; then
+        warning "Java $JAVA_VER found - JDK 25+ breaks the Kotlin compiler used by AGP 8.7.0"
+        WARN=$((WARN + 1))
+        action "Install JDK 17 from https://adoptium.net/ and set JAVA_HOME to that path"
+    elif [ "$JAVA_VER" -ge 17 ]; then
         success "Java $JAVA_VER found"
         PASS=$((PASS + 1))
     else
         warning "Java $JAVA_VER found, but 17+ is required"
         WARN=$((WARN + 1))
-        action "Install JDK 17 or later: https://adoptium.net/"
+        action "Install JDK 17 from https://adoptium.net/"
     fi
 else
     error_msg "Java not found"
     FAIL=$((FAIL + 1))
-    action "Install JDK 17+ from https://adoptium.net/ or https://www.oracle.com/java/"
+    action "Install JDK 17 from https://adoptium.net/ or https://www.oracle.com/java/"
     action "After install, set JAVA_HOME and ensure java is on your PATH"
 fi
 
