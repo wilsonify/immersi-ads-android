@@ -11,6 +11,8 @@ jacoco {
 }
 
 tasks.register<JacocoReport>("jacocoUnitTestReport") {
+    group = "verification"
+    description = "Generates JaCoCo coverage report from unit tests"
     dependsOn("testDebugUnitTest")
     val buildDir = layout.buildDirectory.get().asFile
     reports {
