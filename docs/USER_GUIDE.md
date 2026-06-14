@@ -67,13 +67,13 @@ Track your learning journey:
 
 Customize your experience in the Settings screen:
 
-| Setting | Description |
-|---|---|
-| **Native language** | Change your base language |
-| **Target language** | Change the language you are learning |
-| **Default playback speed** | Set the starting speed for new videos |
+| Setting                     | Description                                      |
+|-----------------------------|--------------------------------------------------|
+| **Native language**         | Change your base language                        |
+| **Target language**         | Change the language you are learning             |
+| **Default playback speed**  | Set the starting speed for new videos            |
 | **Subtitles on by default** | Choose whether subtitles are shown automatically |
-| **Dark mode** | Switch between light, dark, or system theme |
+| **Dark mode**               | Switch between light, dark, or system theme      |
 
 ---
 
@@ -89,13 +89,13 @@ Customize your experience in the Settings screen:
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---|---|
-| App crashes on startup | Ensure your device runs Android 7.0+ and has at least 2 GB of RAM |
-| Video won't play | Check that the video file is not corrupted; try reinstalling the app |
-| Subtitles don't appear | Make sure subtitles are enabled in Settings or via the player button |
-| Saved words are missing | Vocabulary is stored locally; uninstalling the app erases your data |
-| Can't find my language | ImmersiAds currently supports English, Spanish, French, German, Italian, Portuguese, Japanese, Korean, Chinese, Arabic, Russian, and Hindi |
+| Problem                 | Solution                                                                                                                                   |
+|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| App crashes on startup  | Ensure your device runs Android 7.0+ and has at least 2 GB of RAM                                                                          |
+| Video won't play        | Check that the video file is not corrupted; try reinstalling the app                                                                       |
+| Subtitles don't appear  | Make sure subtitles are enabled in Settings or via the player button                                                                       |
+| Saved words are missing | Vocabulary is stored locally; uninstalling the app erases your data                                                                        |
+| Can't find my language  | ImmersiAds currently supports English, Spanish, French, German, Italian, Portuguese, Japanese, Korean, Chinese, Arabic, Russian, and Hindi |
 
 ---
 

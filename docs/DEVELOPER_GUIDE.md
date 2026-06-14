@@ -6,12 +6,12 @@ Everything you need to set up, build, test, and contribute to the ImmersiAds And
 
 ## Prerequisites
 
-| Tool | Version | Notes |
-|---|---|---|
-| Android Studio | Ladybug (2024.2.1) or newer | [Download](https://developer.android.com/studio) |
-| JDK | 17 | Bundled with Android Studio or install [Adoptium](https://adoptium.net/) |
-| Android SDK | 35 (API level 35) | Install via SDK Manager in Android Studio |
-| Gradle | 8.11.1 | Wrapper included (`gradlew` / `gradlew.bat`); no manual install needed |
+| Tool           | Version                     | Notes                                                                    |
+|----------------|-----------------------------|--------------------------------------------------------------------------|
+| Android Studio | Ladybug (2024.2.1) or newer | [Download](https://developer.android.com/studio)                         |
+| JDK            | 17                          | Bundled with Android Studio or install [Adoptium](https://adoptium.net/) |
+| Android SDK    | 35 (API level 35)           | Install via SDK Manager in Android Studio                                |
+| Gradle         | 8.11.1                      | Wrapper included (`gradlew` / `gradlew.bat`); no manual install needed   |
 
 > **Quick check:** Run `bash scripts/setup.sh` (macOS/Linux) or `.\scripts\setup.ps1` (Windows) to validate your environment.
 
@@ -189,12 +189,12 @@ All dependency versions are centralized here. To add a new dependency:
 
 Key configuration in the app module:
 
-| Setting | Value | Notes |
-|---|---|---|
-| `compileSdk` | 35 | Target the latest Android APIs |
-| `minSdk` | 24 | Android 7.0 minimum |
-| `targetSdk` | 35 | Target SDK for Google Play |
-| `jvmTarget` | 17 | Must match JDK version |
+| Setting         | Value                                                   | Notes                          |
+|-----------------|---------------------------------------------------------|--------------------------------|
+| `compileSdk`    | 35                                                      | Target the latest Android APIs |
+| `minSdk`        | 24                                                      | Android 7.0 minimum            |
+| `targetSdk`     | 35                                                      | Target SDK for Google Play     |
+| `jvmTarget`     | 17                                                      | Must match JDK version         |
 | `applicationId` | `com.immersiads.app` (`.debug` suffix for debug builds) |
 
 ---
@@ -224,15 +224,15 @@ app/
 
 ### Key Files
 
-| File | Purpose |
-|---|---|
-| `MainActivity.kt` | Single-activity entry point |
-| `ImmersiAdsApp.kt` | Application class & service locator |
-| `AppNavigation.kt` | Navigation graph with all routes |
-| `AppDatabase.kt` | Room database definition |
-| `SampleData.kt` | Hardcoded sample ads for development |
-| `build.gradle.kts` | App-level build configuration |
-| `gradle/libs.versions.toml` | Version catalog for dependencies |
+| File                        | Purpose                              |
+|-----------------------------|--------------------------------------|
+| `MainActivity.kt`           | Single-activity entry point          |
+| `ImmersiAdsApp.kt`          | Application class & service locator  |
+| `AppNavigation.kt`          | Navigation graph with all routes     |
+| `AppDatabase.kt`            | Room database definition             |
+| `SampleData.kt`             | Hardcoded sample ads for development |
+| `build.gradle.kts`          | App-level build configuration        |
+| `gradle/libs.versions.toml` | Version catalog for dependencies     |
 
 ---
 
@@ -303,23 +303,23 @@ sealed class Screen(val route: String) {
 
 ## Troubleshooting
 
-| Problem | Likely Cause | Solution |
-|---|---|---|
-| `JAVA_HOME is not set` | JDK not installed or not configured | Install JDK 17+ and set `JAVA_HOME`, or open in Android Studio which bundles a JDK |
-| `Android SDK not found` | `ANDROID_HOME` not set | Set `ANDROID_HOME` to your SDK path (see [Prerequisites](#prerequisites)) |
-| `Gradle distribution download failed` | Network issue or blocked URL | Run `bash scripts/diagnose-network.sh`; try a Gradle mirror (see [docs/NETWORK.md](NETWORK.md)) |
-| `Could not resolve all files for configuration` | Missing dependency or network issue | Try `--offline` if you've built before, or check Maven Central / Google Maven access |
-| `Lint found issues` | Code style / correctness warnings | Review `app/build/reports/lint-results-debug.html`; run `./gradlew lintDebug` to see details |
-| `Tests: No tests found` | Wrong test source directory | Ensure test files are in `src/test/` (unit) or `src/androidTest/` (instrumented) |
-| `BUILD FAILED in 9s` | Java version mismatch | AGP 8.7.0 requires JDK 17–21. If you have Java 25+, install JDK 17 and update `JAVA_HOME` |
-| `Configuration cache stale` | Build config changed | Run with `--no-configuration-cache` to rebuild the cache |
-| `Cannot resolve symbol` in IDE | IDE cache out of sync | File → Invalidate Caches → Invalidate and Restart |
-| `Emulator shuts down immediately after starting` | Process tied to parent shell | Launch with `emulator -avd <name> &` or `Start-Process` to detach |
-| `adb: device not found` | Emulator not running or still booting | Run `adb devices` to confirm; wait for boot with `adb wait-for-device` |
-| `adb: failed to install: device is still booting` | Emulator not fully started | Wait for `sys.boot_completed=1`: `adb shell getprop sys.boot_completed` |
-| `Emulator: Could not initialize DirectSoundCapture` | No audio driver (headless) | Safe to ignore; add `-no-audio` to suppress |
-| `Build fails with: 25.0.3 / IllegalArgumentException` | JDK 25 used instead of JDK 17 | Set `JAVA_HOME` to JDK 17 install path; the Kotlin compiler used by AGP 8.7.0 cannot parse JDK 25's version string |
-| `SDK XML version 4 warning during build` | Newer SDK tools than AGP expects | Harmless warning; update AGP to latest or ignore |
+| Problem                                               | Likely Cause                          | Solution                                                                                                           |
+|-------------------------------------------------------|---------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `JAVA_HOME is not set`                                | JDK not installed or not configured   | Install JDK 17+ and set `JAVA_HOME`, or open in Android Studio which bundles a JDK                                 |
+| `Android SDK not found`                               | `ANDROID_HOME` not set                | Set `ANDROID_HOME` to your SDK path (see [Prerequisites](#prerequisites))                                          |
+| `Gradle distribution download failed`                 | Network issue or blocked URL          | Run `bash scripts/diagnose-network.sh`; try a Gradle mirror (see [docs/NETWORK.md](NETWORK.md))                    |
+| `Could not resolve all files for configuration`       | Missing dependency or network issue   | Try `--offline` if you've built before, or check Maven Central / Google Maven access                               |
+| `Lint found issues`                                   | Code style / correctness warnings     | Review `app/build/reports/lint-results-debug.html`; run `./gradlew lintDebug` to see details                       |
+| `Tests: No tests found`                               | Wrong test source directory           | Ensure test files are in `src/test/` (unit) or `src/androidTest/` (instrumented)                                   |
+| `BUILD FAILED in 9s`                                  | Java version mismatch                 | AGP 8.7.0 requires JDK 17–21. If you have Java 25+, install JDK 17 and update `JAVA_HOME`                          |
+| `Configuration cache stale`                           | Build config changed                  | Run with `--no-configuration-cache` to rebuild the cache                                                           |
+| `Cannot resolve symbol` in IDE                        | IDE cache out of sync                 | File → Invalidate Caches → Invalidate and Restart                                                                  |
+| `Emulator shuts down immediately after starting`      | Process tied to parent shell          | Launch with `emulator -avd <name> &` or `Start-Process` to detach                                                  |
+| `adb: device not found`                               | Emulator not running or still booting | Run `adb devices` to confirm; wait for boot with `adb wait-for-device`                                             |
+| `adb: failed to install: device is still booting`     | Emulator not fully started            | Wait for `sys.boot_completed=1`: `adb shell getprop sys.boot_completed`                                            |
+| `Emulator: Could not initialize DirectSoundCapture`   | No audio driver (headless)            | Safe to ignore; add `-no-audio` to suppress                                                                        |
+| `Build fails with: 25.0.3 / IllegalArgumentException` | JDK 25 used instead of JDK 17         | Set `JAVA_HOME` to JDK 17 install path; the Kotlin compiler used by AGP 8.7.0 cannot parse JDK 25's version string |
+| `SDK XML version 4 warning during build`              | Newer SDK tools than AGP expects      | Harmless warning; update AGP to latest or ignore                                                                   |
 
 ---
 

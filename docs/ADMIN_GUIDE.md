@@ -23,10 +23,10 @@ The project uses **GitHub Actions** for continuous integration and delivery. Wor
 
 ### Workflows
 
-| Workflow | File | Trigger | Actions |
-|---|---|---|---|
-| CI | `ci.yml` | Push to any branch, PR to `main` | Lint → Unit Tests → Assemble Debug APK |
-| CodeQL | `codeql.yml` | Push to `main`, weekly schedule | Static security analysis |
+| Workflow | File         | Trigger                          | Actions                                |
+|----------|--------------|----------------------------------|----------------------------------------|
+| CI       | `ci.yml`     | Push to any branch, PR to `main` | Lint → Unit Tests → Assemble Debug APK |
+| CodeQL   | `codeql.yml` | Push to `main`, weekly schedule  | Static security analysis               |
 
 ### ci.yml Pipeline Stages
 
@@ -161,11 +161,11 @@ android {
 
 The app follows **semantic versioning** (`major.minor.patch`):
 
-| Component | Location | Example |
-|---|---|---|
-| `versionCode` | `app/build.gradle.kts` | `2` |
+| Component     | Location               | Example   |
+|---------------|------------------------|-----------|
+| `versionCode` | `app/build.gradle.kts` | `2`       |
 | `versionName` | `app/build.gradle.kts` | `"1.0.0"` |
-| Git tag | `v1.0.0` | `v1.0.0` |
+| Git tag       | `v1.0.0`               | `v1.0.0`  |
 
 - `versionCode` — Integer incremented for each release (used by Android for upgrade detection)
 - `versionName` — Human-readable version displayed to users
@@ -208,12 +208,12 @@ Then inspect the mapping file at `app/build/outputs/mapping/release/mapping.txt`
 
 If CI signing is configured, add these to the repository under **Settings → Secrets and variables → Actions**:
 
-| Secret | Purpose |
-|---|---|
-| `KEYSTORE_BASE64` | Base64-encoded keystore file |
-| `KEYSTORE_PASSWORD` | Keystore password |
-| `KEY_ALIAS` | Key alias |
-| `KEY_PASSWORD` | Key password |
+| Secret              | Purpose                      |
+|---------------------|------------------------------|
+| `KEYSTORE_BASE64`   | Base64-encoded keystore file |
+| `KEYSTORE_PASSWORD` | Keystore password            |
+| `KEY_ALIAS`         | Key alias                    |
+| `KEY_PASSWORD`      | Key password                 |
 
 ### CI Self-Hosted Runner Notes
 
@@ -227,10 +227,10 @@ If CI signing is configured, add these to the repository under **Settings → Se
 
 ### Build Variants
 
-| Variant | `applicationId` | `minifyEnabled` | Debuggable |
-|---|---|---|---|
-| `debug` | `com.immersiads.app.debug` | `false` | Yes |
-| `release` | `com.immersiads.app` | `true` | No |
+| Variant   | `applicationId`            | `minifyEnabled` | Debuggable |
+|-----------|----------------------------|-----------------|------------|
+| `debug`   | `com.immersiads.app.debug` | `false`         | Yes        |
+| `release` | `com.immersiads.app`       | `true`          | No         |
 
 ### Switching Between Sample and Real Data
 
@@ -280,10 +280,10 @@ Track these metrics after release:
 
 ## Maintenance Tasks
 
-| Frequency | Task |
-|---|---|
-| Weekly | Review CI workflow runs for failures |
-| Monthly | Check for dependency updates (Gradle, AGP, Compose, Room, ExoPlayer) |
-| Per release | Verify ProGuard mapping file is saved with the release |
-| Per release | Test release build on a physical device before publishing |
-| Quarterly | Rotate keystore passwords if used in shared environments |
+| Frequency   | Task                                                                 |
+|-------------|----------------------------------------------------------------------|
+| Weekly      | Review CI workflow runs for failures                                 |
+| Monthly     | Check for dependency updates (Gradle, AGP, Compose, Room, ExoPlayer) |
+| Per release | Verify ProGuard mapping file is saved with the release               |
+| Per release | Test release build on a physical device before publishing            |
+| Quarterly   | Rotate keystore passwords if used in shared environments             |

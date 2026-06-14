@@ -39,14 +39,14 @@ ImmersiAds follows **Clean Architecture** principles with a clear separation of 
 
 Each feature is self-contained with a `Screen.kt` (Compose UI) and a `ViewModel.kt`:
 
-| Feature | ViewModel | Key State |
-|---|---|---|
-| Onboarding | `OnboardingViewModel` | Step, language selections, completion |
-| Feed | `FeedViewModel` | Ad list, language filter, streak |
-| Player | `PlayerViewModel` | Playback, subtitle sync, word selection |
-| Vocabulary | `VocabularyViewModel` | Item list, search query |
-| Progress | `ProgressViewModel` | Streak, ads watched, vocab count |
-| Settings | `SettingsViewModel` | All user preferences |
+| Feature    | ViewModel             | Key State                               |
+|------------|-----------------------|-----------------------------------------|
+| Onboarding | `OnboardingViewModel` | Step, language selections, completion   |
+| Feed       | `FeedViewModel`       | Ad list, language filter, streak        |
+| Player     | `PlayerViewModel`     | Playback, subtitle sync, word selection |
+| Vocabulary | `VocabularyViewModel` | Item list, search query                 |
+| Progress   | `ProgressViewModel`   | Streak, ads watched, vocab count        |
+| Settings   | `SettingsViewModel`   | All user preferences                    |
 
 **Navigation** (`ui/navigation/`)
 - `AppNavigation` — `NavHost` with `Screen` sealed class for type-safe routing. Navigates to onboarding or feed based on `isOnboardingComplete`.

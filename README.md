@@ -38,12 +38,12 @@ bash scripts/run.sh                   # macOS / Linux
 
 ## Prerequisites
 
-| Requirement | Version | Notes |
-|---|---|---|
-| **Java** | 17 or later | [Adoptium](https://adoptium.net/) or Android Studio bundled JDK |
-| **Android SDK** | 35 (API 35) | Install via Android Studio SDK Manager |
-| **Android Studio** | Ladybug (2024.2.1+) | [Download](https://developer.android.com/studio) |
-| **Git** | Any recent version | [Download](https://git-scm.com/) |
+| Requirement        | Version             | Notes                                                           |
+|--------------------|---------------------|-----------------------------------------------------------------|
+| **Java**           | 17 or later         | [Adoptium](https://adoptium.net/) or Android Studio bundled JDK |
+| **Android SDK**    | 35 (API 35)         | Install via Android Studio SDK Manager                          |
+| **Android Studio** | Ladybug (2024.2.1+) | [Download](https://developer.android.com/studio)                |
+| **Git**            | Any recent version  | [Download](https://git-scm.com/)                                |
 
 ### Checking Your Setup
 
@@ -100,15 +100,15 @@ bash scripts/build.sh                  # macOS / Linux
 
 Scripts are provided for common tasks (use `scripts\<name>.bat` or `.\scripts\<name>.ps1` on Windows):
 
-| Task | Command | Description |
-|---|---|---|
-| **Setup** | `bash scripts/setup.sh` | Validate prerequisites and environment |
-| **Build** | `bash scripts/build.sh` | Build debug APK |
-| **Test** | `bash scripts/test.sh` | Run unit tests |
-| **Lint** | `bash scripts/lint.sh` | Run lint checks |
-| **Verify** | `bash scripts/verify.sh` | Run lint + tests + build (full check) |
-| **Run** | `bash scripts/run.sh` | Install APK and launch on emulator/device |
-| **Clean** | `bash scripts/clean.sh` | Remove build artifacts |
+| Task                    | Command                            | Description                                 |
+|-------------------------|------------------------------------|---------------------------------------------|
+| **Setup**               | `bash scripts/setup.sh`            | Validate prerequisites and environment      |
+| **Build**               | `bash scripts/build.sh`            | Build debug APK                             |
+| **Test**                | `bash scripts/test.sh`             | Run unit tests                              |
+| **Lint**                | `bash scripts/lint.sh`             | Run lint checks                             |
+| **Verify**              | `bash scripts/verify.sh`           | Run lint + tests + build (full check)       |
+| **Run**                 | `bash scripts/run.sh`              | Install APK and launch on emulator/device   |
+| **Clean**               | `bash scripts/clean.sh`            | Remove build artifacts                      |
 | **Network diagnostics** | `bash scripts/diagnose-network.sh` | Check connectivity to all required services |
 
 All scripts accept extra Gradle flags. For example:
@@ -165,36 +165,36 @@ See [docs/NETWORK.md](docs/NETWORK.md) for comprehensive troubleshooting.
 
 ## Common Problems
 
-| Problem | Solution |
-|---|---|
-| `Java not found` | Install JDK 17+ and set `JAVA_HOME` |
-| `Android SDK not found` | Install Android Studio and set `ANDROID_HOME` |
-| `Gradle distribution download failed` | Check network; try a mirror; see [NETWORK.md](docs/NETWORK.md) |
-| `Could not resolve dependencies` | Check Maven/Google repository access; try `--offline` after successful build |
-| `Lint: abortOnError` | Lint issues are informational — review `app/build/reports/lint-results-debug.html` |
-| `Tests: No tests found` | Ensure test files are in `src/test/` directory |
-| `Configuration cache issue` | Run with `--no-configuration-cache` to refresh |
-| `Emulator shuts down immediately` | Launch detached: `emulator -avd <name> &` or use `Start-Process` |
-| `adb: device not found` | Emulator not running; run `adb devices` to check |
+| Problem                               | Solution                                                                           |
+|---------------------------------------|------------------------------------------------------------------------------------|
+| `Java not found`                      | Install JDK 17+ and set `JAVA_HOME`                                                |
+| `Android SDK not found`               | Install Android Studio and set `ANDROID_HOME`                                      |
+| `Gradle distribution download failed` | Check network; try a mirror; see [NETWORK.md](docs/NETWORK.md)                     |
+| `Could not resolve dependencies`      | Check Maven/Google repository access; try `--offline` after successful build       |
+| `Lint: abortOnError`                  | Lint issues are informational — review `app/build/reports/lint-results-debug.html` |
+| `Tests: No tests found`               | Ensure test files are in `src/test/` directory                                     |
+| `Configuration cache issue`           | Run with `--no-configuration-cache` to refresh                                     |
+| `Emulator shuts down immediately`     | Launch detached: `emulator -avd <name> &` or use `Start-Process`                   |
+| `adb: device not found`               | Emulator not running; run `adb devices` to check                                   |
 
 ---
 
 ## Features
 
-| Feature | Status |
-|---|---|
-| User onboarding (native + target language selection) | ✅ |
-| Advertisement feed with language filtering | ✅ |
-| Video playback with ExoPlayer | ✅ |
-| Variable playback speed (0.5× – 2.0×) | ✅ |
-| Pause and replay controls | ✅ |
-| Interactive subtitles with word tapping | ✅ |
-| Word and phrase translation popup | ✅ |
-| Save vocabulary to local database | ✅ |
-| Personal vocabulary list with search | ✅ |
-| Learning streaks | ✅ |
-| Progress dashboard | ✅ |
-| Settings (subtitles, speed, dark mode) | ✅ |
+| Feature                                              | Status |
+|------------------------------------------------------|--------|
+| User onboarding (native + target language selection) | ✅      |
+| Advertisement feed with language filtering           | ✅      |
+| Video playback with ExoPlayer                        | ✅      |
+| Variable playback speed (0.5× – 2.0×)                | ✅      |
+| Pause and replay controls                            | ✅      |
+| Interactive subtitles with word tapping              | ✅      |
+| Word and phrase translation popup                    | ✅      |
+| Save vocabulary to local database                    | ✅      |
+| Personal vocabulary list with search                 | ✅      |
+| Learning streaks                                     | ✅      |
+| Progress dashboard                                   | ✅      |
+| Settings (subtitles, speed, dark mode)               | ✅      |
 
 ---
 
@@ -245,14 +245,14 @@ Push / PR
 
 ## Documentation
 
-| Guide | Audience | Description |
-|---|---|---|
-| [User Guide](docs/USER_GUIDE.md) | Users | Installation, features walkthrough, tips, FAQs |
-| [Developer Guide](docs/DEVELOPER_GUIDE.md) | Developers | Setup, build, test, code style, contribution guide |
-| [Admin Guide](docs/ADMIN_GUIDE.md) | Admins | CI/CD, release process, signing, configuration |
-| [Architecture](docs/ARCHITECTURE.md) | Developers | Clean Architecture layers, data flow, dependency graph |
-| [Network Guide](docs/NETWORK.md) | Developers | Proxy, DNS, offline mode, Gradle mirror troubleshooting |
-| [Roadmap](docs/ROADMAP.md) | All | Planned features and future direction |
+| Guide                                      | Audience   | Description                                             |
+|--------------------------------------------|------------|---------------------------------------------------------|
+| [User Guide](docs/USER_GUIDE.md)           | Users      | Installation, features walkthrough, tips, FAQs          |
+| [Developer Guide](docs/DEVELOPER_GUIDE.md) | Developers | Setup, build, test, code style, contribution guide      |
+| [Admin Guide](docs/ADMIN_GUIDE.md)         | Admins     | CI/CD, release process, signing, configuration          |
+| [Architecture](docs/ARCHITECTURE.md)       | Developers | Clean Architecture layers, data flow, dependency graph  |
+| [Network Guide](docs/NETWORK.md)           | Developers | Proxy, DNS, offline mode, Gradle mirror troubleshooting |
+| [Roadmap](docs/ROADMAP.md)                 | All        | Planned features and future direction                   |
 
 ---
 
