@@ -27,41 +27,35 @@ class FeedViewModel(
     private val _uiState = MutableStateFlow(FeedUiState())
     val uiState: StateFlow<FeedUiState> = _uiState.asStateFlow()
 
+    private val _filterByLanguage = MutableStateFlow(true)
+
     init {
         viewModelScope.launch {
             combine(
                 adRepository.getAdvertisements(),
                 userPreferences.targetLanguage,
-                userPreferences.streakCount
-            ) { ads, targetLang, streak ->
-                Triple(ads, targetLang, streak)
-            }.collect { (ads, targetLang, streak) ->
-                val filtered = if (_uiState.value.filterByLanguage) {
+                userPreferences.streakCount,
+                _filterByLanguage
+            ) { ads, targetLang, streak, filterEnabled ->
+                val filtered = if (filterEnabled) {
                     ads.filter { it.languageCode == targetLang }
                 } else {
                     ads
                 }
-                _uiState.value = _uiState.value.copy(
+                FeedUiState(
                     advertisements = filtered,
                     targetLanguage = targetLang,
                     streakCount = streak,
-                    isLoading = false
+                    isLoading = false,
+                    filterByLanguage = filterEnabled
                 )
+            }.collect { state ->
+                _uiState.value = state
             }
         }
     }
 
     fun toggleLanguageFilter() {
-        val current = _uiState.value
-        val allAds = adRepository.getAllAdvertisements()
-        val filtered = if (!current.filterByLanguage) {
-            allAds.filter { it.languageCode == current.targetLanguage }
-        } else {
-            allAds
-        }
-        _uiState.value = current.copy(
-            filterByLanguage = !current.filterByLanguage,
-            advertisements = filtered
-        )
+        _filterByLanguage.value = !_filterByLanguage.value
     }
 }

@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.immersiads.app.ImmersiAdsApp
+import com.immersiads.app.ui.theme.ImmersiAdsTheme
 import com.immersiads.app.ui.feed.FeedScreen
 import com.immersiads.app.ui.feed.FeedViewModel
 import com.immersiads.app.ui.onboarding.OnboardingScreen
@@ -44,13 +45,15 @@ fun AppNavigation(
     val userPreferences = app.userPreferences
 
     val isOnboardingComplete by userPreferences.isOnboardingComplete.collectAsState(initial = false)
+    val isDarkMode by userPreferences.isDarkMode.collectAsState(initial = false)
 
-    val startDestination = if (isOnboardingComplete) Screen.Feed.route else Screen.Onboarding.route
+    ImmersiAdsTheme(darkTheme = isDarkMode) {
+        val startDestination = if (isOnboardingComplete) Screen.Feed.route else Screen.Onboarding.route
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination
+        ) {
         composable(Screen.Onboarding.route) {
             val viewModel = OnboardingViewModel(userPreferences)
             OnboardingScreen(
@@ -112,4 +115,5 @@ fun AppNavigation(
             )
         }
     }
+}
 }

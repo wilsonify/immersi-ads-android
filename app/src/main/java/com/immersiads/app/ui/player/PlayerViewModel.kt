@@ -25,7 +25,8 @@ data class PlayerUiState(
     val selectedWordTranslation: String? = null,
     val showTranslationPopup: Boolean = false,
     val savedVocabularyWords: Set<String> = emptySet(),
-    val snackbarMessage: String? = null
+    val snackbarMessage: String? = null,
+    val errorMessage: String? = null
 )
 
 class PlayerViewModel(
@@ -100,7 +101,11 @@ class PlayerViewModel(
     }
 
     fun dismissTranslationPopup() {
-        _uiState.value = _uiState.value.copy(showTranslationPopup = false)
+        _uiState.value = _uiState.value.copy(
+            showTranslationPopup = false,
+            selectedWord = null,
+            selectedWordTranslation = null
+        )
     }
 
     fun saveWordToVocabulary() {
@@ -130,6 +135,16 @@ class PlayerViewModel(
             userPreferences.incrementAdsWatched()
             userPreferences.incrementStreak()
         }
+    }
+
+    fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+        _uiState.value = _uiState.value.copy(
+            errorMessage = "Playback error: ${error.localizedMessage ?: "Unknown error"}"
+        )
+    }
+
+    fun clearError() {
+        _uiState.value = _uiState.value.copy(errorMessage = null)
     }
 
     fun clearSnackbar() {

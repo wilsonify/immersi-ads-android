@@ -31,6 +31,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -64,6 +67,7 @@ fun PlayerScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val snackbarHostState = remember { SnackbarHostState() }
     var showSpeedDialog by remember { mutableStateOf(false) }
 
@@ -94,7 +98,27 @@ fun PlayerScreen(
     LaunchedEffect(Unit) {
         while (true) {
             delay(200)
-            viewModel.updatePosition(exoPlayer.currentPosition)
+            if (exoPlayer.isPlaying) {
+                viewModel.updatePosition(exoPlayer.currentPosition)
+            }
+        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val lifecycleObserver = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> exoPlayer.pause()
+                Lifecycle.Event.ON_RESUME -> {
+                    if (uiState.advertisement != null) {
+                        exoPlayer.play()
+                    }
+                }
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
         }
     }
 
@@ -105,12 +129,33 @@ fun PlayerScreen(
                     viewModel.onAdCompleted()
                 }
             }
+            override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                viewModel.onPlayerError(error)
+            }
         }
         exoPlayer.addListener(listener)
         onDispose {
             exoPlayer.removeListener(listener)
             exoPlayer.release()
         }
+    }
+
+    if (uiState.errorMessage != null) {
+        AlertDialog(
+            onDismissRequest = viewModel::clearError,
+            title = { Text("Playback Error") },
+            text = { Text(uiState.errorMessage ?: "") },
+            confirmButton = {
+                Button(onClick = { viewModel.clearError(); onNavigateBack() }) {
+                    Text("Go Back")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::clearError) {
+                    Text("Dismiss")
+                }
+            }
+        )
     }
 
     Scaffold(

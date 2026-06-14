@@ -9,6 +9,16 @@ android {
     namespace = "com.immersiads.app"
     compileSdk = 35
 
+    // Ensure JDK 17 is used (newer JDKs like 25 break the Kotlin compiler version used here)
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
     defaultConfig {
         applicationId = "com.immersiads.app"
         minSdk = 24
@@ -31,15 +41,6 @@ android {
             applicationIdSuffix = ".debug"
             isDebuggable = true
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 
     buildFeatures {
