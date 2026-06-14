@@ -45,6 +45,7 @@ captures/
 .idea/modules.xml
 .idea/*.xml
 .idea/kotlinc.xml
+.kotlin/
 
 # Keystore files
 *.jks
