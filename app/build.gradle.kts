@@ -7,22 +7,17 @@ plugins {
 
 android {
     namespace = "com.immersiads.app"
-    compileSdk = 35
+    compileSdk = 37
 
-    // Ensure JDK 17 is used (newer JDKs like 25 break the Kotlin compiler version used here)
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     defaultConfig {
         applicationId = "com.immersiads.app"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
 
@@ -66,6 +61,12 @@ android {
         warningsAsErrors = false
         htmlReport = true
         htmlOutput = file("build/reports/lint-results.html")
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 
