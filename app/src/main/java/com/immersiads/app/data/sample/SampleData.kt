@@ -3,7 +3,6 @@ package com.immersiads.app.data.sample
 import com.immersiads.app.data.model.Advertisement
 import com.immersiads.app.data.model.DifficultyLevel
 import com.immersiads.app.data.model.Subtitle
-import com.immersiads.app.data.model.VocabularyItem
 
 object SampleData {
 
@@ -83,27 +82,4 @@ object SampleData {
         )
     )
 
-    val sampleVocabularyItems = listOf(
-        VocabularyItem(
-            word = "auténtico",
-            translation = "authentic",
-            languageCode = "es",
-            context = "El sabor auténtico de España",
-            adId = "ad_001"
-        ),
-        VocabularyItem(
-            word = "ingredientes",
-            translation = "ingredients",
-            languageCode = "es",
-            context = "Hecho con ingredientes naturales",
-            adId = "ad_001"
-        ),
-        VocabularyItem(
-            word = "qualité",
-            translation = "quality",
-            languageCode = "fr",
-            context = "La qualité avant tout",
-            adId = "ad_002"
-        )
-    )
 }

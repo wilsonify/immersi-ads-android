@@ -3,7 +3,6 @@ package com.immersiads.app.ui.viewmodel
 import com.immersiads.app.data.model.Advertisement
 import com.immersiads.app.data.model.DifficultyLevel
 import com.immersiads.app.data.model.Subtitle
-import com.immersiads.app.data.model.VocabularyItem
 import com.immersiads.app.data.repository.AdRepository
 import com.immersiads.app.data.repository.VocabularyRepository
 import com.immersiads.app.domain.UserPreferences

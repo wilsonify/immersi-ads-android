@@ -35,7 +35,6 @@ class UserPreferences(private val context: Context) {
     val playbackSpeed: Flow<Float> = context.dataStore.data.map { it[KEY_PLAYBACK_SPEED] ?: 1.0f }
     val subtitlesEnabled: Flow<Boolean> = context.dataStore.data.map { it[KEY_SUBTITLES_ENABLED] ?: true }
     val streakCount: Flow<Int> = context.dataStore.data.map { it[KEY_STREAK_COUNT] ?: 0 }
-    val lastActiveDate: Flow<Long> = context.dataStore.data.map { it[KEY_LAST_ACTIVE_DATE] ?: 0L }
     val totalAdsWatched: Flow<Int> = context.dataStore.data.map { it[KEY_TOTAL_ADS_WATCHED] ?: 0 }
     val isDarkMode: Flow<Boolean> = context.dataStore.data.map { it[KEY_DARK_MODE] ?: false }
 

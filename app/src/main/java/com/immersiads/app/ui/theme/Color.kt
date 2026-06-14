@@ -10,8 +10,3 @@ val Purple40 = Color(0xFF6650A4)
 val PurpleGrey40 = Color(0xFF625B71)
 val Pink40 = Color(0xFF7D5260)
 
-// ImmersiAds brand colors
-val ImmersiBrand = Color(0xFF1A73E8)
-val ImmersiAccent = Color(0xFFFF6B35)
-val ImmersiSurface = Color(0xFFF8F9FA)
-val ImmersiOnSurface = Color(0xFF202124)

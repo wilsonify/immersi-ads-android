@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.immersiads.app.data.local.entities.VocabularyEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -24,12 +23,7 @@ interface VocabularyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVocabulary(item: VocabularyEntity): Long
 
-    @Update
-    suspend fun updateVocabulary(item: VocabularyEntity)
-
     @Delete
     suspend fun deleteVocabulary(item: VocabularyEntity)
 
-    @Query("DELETE FROM vocabulary WHERE id = :id")
-    suspend fun deleteById(id: Long)
 }

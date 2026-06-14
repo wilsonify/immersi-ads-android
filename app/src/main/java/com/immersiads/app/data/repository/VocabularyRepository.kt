@@ -19,13 +19,8 @@ class VocabularyRepository(private val dao: VocabularyDao) {
     suspend fun saveVocabulary(item: VocabularyItem): Long =
         dao.insertVocabulary(item.toEntity())
 
-    suspend fun updateVocabulary(item: VocabularyItem) =
-        dao.updateVocabulary(item.toEntity())
-
     suspend fun deleteVocabulary(item: VocabularyItem) =
         dao.deleteVocabulary(item.toEntity())
-
-    suspend fun deleteById(id: Long) = dao.deleteById(id)
 
     private fun VocabularyEntity.toModel(): VocabularyItem = VocabularyItem(
         id = id,
