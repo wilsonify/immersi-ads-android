@@ -73,30 +73,7 @@ fun VocabularyScreen(
             )
 
             if (uiState.vocabularyItems.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("📚", fontSize = 48.sp)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            if (uiState.searchQuery.isBlank())
-                                "No saved vocabulary yet"
-                            else
-                                "No results for \"${uiState.searchQuery}\"",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        if (uiState.searchQuery.isBlank()) {
-                            Text(
-                                "Tap words in subtitles to save them",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
+                VocabularyEmptyState(searchQuery = uiState.searchQuery)
             } else {
                 Text(
                     text = "${uiState.vocabularyItems.size} words",
@@ -116,6 +93,34 @@ fun VocabularyScreen(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun VocabularyEmptyState(searchQuery: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("📚", fontSize = 48.sp)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                if (searchQuery.isBlank())
+                    "No saved vocabulary yet"
+                else
+                    "No results for \"$searchQuery\"",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            if (searchQuery.isBlank()) {
+                Text(
+                    "Tap words in subtitles to save them",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }

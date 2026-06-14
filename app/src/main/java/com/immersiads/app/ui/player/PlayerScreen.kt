@@ -57,6 +57,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
 
+@Suppress("kotlin:S108")
 @OptIn(ExperimentalMaterial3Api::class)
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
@@ -68,7 +69,7 @@ fun PlayerScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val snackbarHostState = remember { SnackbarHostState() }
-    var showSpeedDialog by remember { mutableStateOf(false) }
+    val showSpeedDialogState = remember { mutableStateOf(false) }
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build()
@@ -94,32 +95,13 @@ fun PlayerScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(200L)
-            if (exoPlayer.isPlaying) {
-                viewModel.updatePosition(exoPlayer.currentPosition)
-            }
-        }
-    }
+    PlayerPositionTracker(exoPlayer = exoPlayer, onPositionUpdate = viewModel::updatePosition)
 
-    DisposableEffect(lifecycleOwner) {
-        val lifecycleObserver = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_PAUSE -> exoPlayer.pause()
-                Lifecycle.Event.ON_RESUME -> {
-                    if (uiState.advertisement != null) {
-                        exoPlayer.play()
-                    }
-                }
-                else -> {}
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
-        }
-    }
+    LifecycleAwarePlayerPauseResume(
+        lifecycleOwner = lifecycleOwner,
+        exoPlayer = exoPlayer,
+        hasMedia = uiState.advertisement != null
+    )
 
     DisposableEffect(Unit) {
         val listener = object : Player.Listener {
@@ -139,105 +121,28 @@ fun PlayerScreen(
         }
     }
 
-    if (uiState.errorMessage != null) {
-        AlertDialog(
-            onDismissRequest = viewModel::clearError,
-            title = { Text("Playback Error") },
-            text = { Text(uiState.errorMessage ?: "") },
-            confirmButton = {
-                Button(onClick = { viewModel.clearError(); onNavigateBack() }) {
-                    Text("Go Back")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = viewModel::clearError) {
-                    Text("Dismiss")
-                }
-            }
-        )
-    }
+    PlayerErrorDialog(uiState.errorMessage, viewModel::clearError, onNavigateBack)
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        uiState.advertisement?.title ?: "Playing",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { showSpeedDialog = true },
-                        modifier = Modifier.semantics { contentDescription = "Playback speed" }
-                    ) {
-                        Icon(Icons.Default.Speed, contentDescription = null)
-                    }
-                    IconButton(
-                        onClick = viewModel::toggleSubtitles,
-                        modifier = Modifier.semantics { contentDescription = "Toggle subtitles" }
-                    ) {
-                        Icon(
-                            if (uiState.subtitlesEnabled)
-                                Icons.Default.ClosedCaption
-                            else
-                                Icons.Default.ClosedCaptionDisabled,
-                            contentDescription = null
-                        )
-                    }
-                }
+            PlayerTopBar(
+                title = uiState.advertisement?.title,
+                subtitlesEnabled = uiState.subtitlesEnabled,
+                onNavigateBack = onNavigateBack,
+                onSpeedClick = { showSpeedDialogState.value = true },
+                onToggleSubtitles = viewModel::toggleSubtitles
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                AndroidView(
-                    factory = { ctx ->
-                        PlayerView(ctx).apply {
-                            player = exoPlayer
-                            useController = true
-                        }
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            if (uiState.subtitlesEnabled && uiState.currentSubtitle != null) {
-                SubtitleBar(
-                    subtitle = uiState.currentSubtitle!!.text,
-                    onWordClick = viewModel::onWordSelected
-                )
-            }
-
-            uiState.advertisement?.let { ad ->
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = ad.brand,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = ad.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
-        }
+        PlayerContent(
+            paddingValues = paddingValues,
+            exoPlayer = exoPlayer,
+            subtitlesEnabled = uiState.subtitlesEnabled,
+            currentSubtitle = uiState.currentSubtitle?.text,
+            advertisement = uiState.advertisement,
+            onWordClick = viewModel::onWordSelected
+        )
     }
 
     if (uiState.showTranslationPopup) {
@@ -249,15 +154,206 @@ fun PlayerScreen(
         )
     }
 
-    if (showSpeedDialog) {
+    if (showSpeedDialogState.value) {
         SpeedSelectionDialog(
             currentSpeed = uiState.playbackSpeed,
             onSpeedSelected = { speed ->
                 viewModel.setPlaybackSpeed(speed)
-                showSpeedDialog = false
+                showSpeedDialogState.value = false
             },
-            onDismiss = { showSpeedDialog = false }
+            onDismiss = { showSpeedDialogState.value = false }
         )
+    }
+}
+
+@Composable
+private fun PlayerPositionTracker(
+    exoPlayer: ExoPlayer,
+    onPositionUpdate: (Long) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(200L)
+            if (exoPlayer.isPlaying) {
+                onPositionUpdate(exoPlayer.currentPosition)
+            }
+        }
+    }
+}
+
+@Suppress("kotlin:S108")
+@Composable
+private fun LifecycleAwarePlayerPauseResume(
+    lifecycleOwner: androidx.lifecycle.LifecycleOwner,
+    exoPlayer: ExoPlayer,
+    hasMedia: Boolean
+) {
+    DisposableEffect(lifecycleOwner) {
+        val lifecycleObserver = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> exoPlayer.pause()
+                Lifecycle.Event.ON_RESUME -> {
+                    if (hasMedia) {
+                        exoPlayer.play()
+                    }
+                }
+                else -> { }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
+        }
+    }
+}
+
+@Composable
+private fun PlayerErrorDialog(
+    errorMessage: String?,
+    onClearError: () -> Unit,
+    onNavigateBack: () -> Unit
+) {
+    if (errorMessage != null) {
+        AlertDialog(
+            onDismissRequest = onClearError,
+            title = { Text("Playback Error") },
+            text = { Text(errorMessage) },
+            confirmButton = {
+                Button(onClick = { onClearError(); onNavigateBack() }) {
+                    Text("Go Back")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onClearError) {
+                    Text("Dismiss")
+                }
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PlayerTopBar(
+    title: String?,
+    subtitlesEnabled: Boolean,
+    onNavigateBack: () -> Unit,
+    onSpeedClick: () -> Unit,
+    onToggleSubtitles: () -> Unit
+) {
+    TopAppBar(
+        title = {
+            Text(
+                title ?: "Playing",
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+        },
+        actions = {
+            IconButton(
+                onClick = onSpeedClick,
+                modifier = Modifier.semantics { contentDescription = "Playback speed" }
+            ) {
+                Icon(Icons.Default.Speed, contentDescription = null)
+            }
+            IconButton(
+                onClick = onToggleSubtitles,
+                modifier = Modifier.semantics { contentDescription = "Toggle subtitles" }
+            ) {
+                Icon(
+                    if (subtitlesEnabled)
+                        Icons.Default.ClosedCaption
+                    else
+                        Icons.Default.ClosedCaptionDisabled,
+                    contentDescription = null
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun PlayerVideoContent(
+    modifier: Modifier,
+    exoPlayer: ExoPlayer
+) {
+    Box(
+        modifier = modifier
+    ) {
+        AndroidView(
+            factory = { ctx ->
+                PlayerView(ctx).apply {
+                    player = exoPlayer
+                    useController = true
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
+private fun PlayerSubtitleSection(
+    subtitlesEnabled: Boolean,
+    currentSubtitle: String?,
+    onWordClick: (String) -> Unit
+) {
+    if (subtitlesEnabled && currentSubtitle != null) {
+        SubtitleBar(
+            subtitle = currentSubtitle,
+            onWordClick = onWordClick
+        )
+    }
+}
+
+@Composable
+private fun PlayerAdInfo(
+    advertisement: com.immersiads.app.data.model.Advertisement?
+) {
+    advertisement?.let { ad ->
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = ad.brand,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = ad.title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlayerContent(
+    paddingValues: androidx.compose.foundation.layout.PaddingValues,
+    exoPlayer: ExoPlayer,
+    subtitlesEnabled: Boolean,
+    currentSubtitle: String?,
+    advertisement: com.immersiads.app.data.model.Advertisement?,
+    onWordClick: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        PlayerVideoContent(
+            modifier = Modifier.fillMaxWidth().weight(1f),
+            exoPlayer = exoPlayer
+        )
+        PlayerSubtitleSection(
+            subtitlesEnabled = subtitlesEnabled,
+            currentSubtitle = currentSubtitle,
+            onWordClick = onWordClick
+        )
+        PlayerAdInfo(advertisement = advertisement)
     }
 }
 

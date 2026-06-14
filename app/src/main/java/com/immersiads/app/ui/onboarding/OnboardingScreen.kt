@@ -93,37 +93,58 @@ fun OnboardingScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                if (uiState.currentStep > 0) {
-                    OutlinedButton(onClick = viewModel::previousStep) {
-                        Text("Back")
-                    }
-                } else {
-                    Spacer(modifier = Modifier.size(1.dp))
-                }
-
-                Button(
-                    onClick = {
-                        if (uiState.currentStep < uiState.totalSteps - 1) {
-                            viewModel.nextStep()
-                        } else {
-                            viewModel.completeOnboarding()
-                        }
-                    },
-                    enabled = when (uiState.currentStep) {
-                        1 -> uiState.nativeLanguage != null
-                        2 -> uiState.targetLanguage != null
-                        else -> true
-                    }
-                ) {
-                    Text(if (uiState.currentStep < uiState.totalSteps - 1) "Next" else "Get Started")
-                }
-            }
+            OnboardingActionButtons(
+                currentStep = uiState.currentStep,
+                totalSteps = uiState.totalSteps,
+                isNativeSelected = uiState.nativeLanguage != null,
+                isTargetSelected = uiState.targetLanguage != null,
+                onPrevious = viewModel::previousStep,
+                onNext = viewModel::nextStep,
+                onComplete = viewModel::completeOnboarding
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+private fun OnboardingActionButtons(
+    currentStep: Int,
+    totalSteps: Int,
+    isNativeSelected: Boolean,
+    isTargetSelected: Boolean,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+    onComplete: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        if (currentStep > 0) {
+            OutlinedButton(onClick = onPrevious) {
+                Text("Back")
+            }
+        } else {
+            Spacer(modifier = Modifier.size(1.dp))
+        }
+
+        Button(
+            onClick = {
+                if (currentStep < totalSteps - 1) {
+                    onNext()
+                } else {
+                    onComplete()
+                }
+            },
+            enabled = when (currentStep) {
+                1 -> isNativeSelected
+                2 -> isTargetSelected
+                else -> true
+            }
+        ) {
+            Text(if (currentStep < totalSteps - 1) "Next" else "Get Started")
         }
     }
 }
