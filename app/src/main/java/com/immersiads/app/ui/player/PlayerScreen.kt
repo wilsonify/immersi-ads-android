@@ -96,7 +96,7 @@ fun PlayerScreen(
 
     LaunchedEffect(Unit) {
         while (true) {
-            delay(200.milliseconds)
+            delay(200L)
             if (exoPlayer.isPlaying) {
                 viewModel.updatePosition(exoPlayer.currentPosition)
             }
