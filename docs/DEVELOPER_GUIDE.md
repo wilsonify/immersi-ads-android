@@ -8,10 +8,12 @@ Everything you need to set up, build, test, and contribute to the ImmersiAds And
 
 | Tool | Version | Notes |
 |---|---|---|
-| Android Studio | Ladybug (2024.2.1) or newer | Download from [developer.android.com/studio](https://developer.android.com/studio) |
-| JDK | 17 | Bundled with Android Studio or installed separately |
+| Android Studio | Ladybug (2024.2.1) or newer | [Download](https://developer.android.com/studio) |
+| JDK | 17 | Bundled with Android Studio or install [Adoptium](https://adoptium.net/) |
 | Android SDK | 35 (API level 35) | Install via SDK Manager in Android Studio |
-| Gradle | 8.11.1 | Wrapper included (`gradlew`); no manual install needed |
+| Gradle | 8.11.1 | Wrapper included (`gradlew` / `gradlew.bat`); no manual install needed |
+
+> **Quick check:** Run `bash scripts/setup.sh` (macOS/Linux) or `.\scripts\setup.ps1` (Windows) to validate your environment.
 
 ---
 
@@ -40,10 +42,14 @@ cd immersi-ads-android
 
 ## Building
 
+> **Tip:** Use the convenience scripts instead of raw `gradlew` — they handle output formatting and error reporting.  
+> `bash scripts/build.sh` (macOS/Linux) or `.\scripts\build.ps1` (Windows)
+
 ### Debug APK
 
 ```bash
-./gradlew assembleDebug
+./gradlew assembleDebug          # macOS / Linux
+# gradlew.bat assembleDebug       # Windows
 ```
 
 Output: `app/build/outputs/apk/debug/app-debug.apk`
@@ -51,7 +57,8 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`
 ### Release APK
 
 ```bash
-./gradlew assembleRelease
+./gradlew assembleRelease        # macOS / Linux
+# gradlew.bat assembleRelease     # Windows
 ```
 
 Output: `app/build/outputs/apk/release/app-release-unsigned.apk`
@@ -61,38 +68,100 @@ Output: `app/build/outputs/apk/release/app-release-unsigned.apk`
 ### Install on Device / Emulator
 
 ```bash
-./gradlew installDebug
+./gradlew installDebug            # macOS / Linux
+# gradlew.bat installDebug        # Windows
 ```
 
 ---
 
 ## Running Tests
 
+> **Tip:** Use `bash scripts/test.sh` (macOS/Linux) or `.\scripts\test.ps1` (Windows) for a streamlined test run.
+
 ### Unit Tests
 
 ```bash
-./gradlew testDebugUnitTest
+./gradlew testDebugUnitTest       # macOS / Linux
+# gradlew.bat testDebugUnitTest   # Windows
 ```
 
 Tests use **JUnit 4**, **MockK**, and **kotlinx-coroutines-test** with `StandardTestDispatcher`.
 
 Results: `app/build/reports/tests/testDebugUnitTest/index.html`
 
+To run a specific test class:
+
+```bash
+./gradlew testDebugUnitTest --tests *VocabularyViewModelTest
+```
+
 ### Instrumented Tests
 
 Requires an emulator or connected device:
 
 ```bash
-./gradlew connectedDebugAndroidTest
+./gradlew connectedDebugAndroidTest    # macOS / Linux
+# gradlew.bat connectedDebugAndroidTest # Windows
 ```
 
 ### Lint
 
 ```bash
-./gradlew lint
+./gradlew lintDebug                    # macOS / Linux  (matches CI)
+# gradlew.bat lintDebug                # Windows
 ```
 
+> Use `lintDebug` (not `lint`) to match the CI pipeline. The `lint.sh` / `lint.ps1` scripts use `lintDebug`.
+
 Results: `app/build/reports/lint-results-debug.html`
+
+---
+
+## Build Configuration
+
+### `gradle.properties` (Project-Level)
+
+Located at the project root, this file sets JVM and Gradle options:
+
+```properties
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8   # Give Gradle 2 GB of heap
+org.gradle.configuration-cache=true                    # Speed up subsequent builds
+org.gradle.parallel=true                               # Build modules in parallel
+android.useAndroidX=true
+kotlin.code.style=official
+android.nonTransitiveRClass=true
+```
+
+### `gradle/libs.versions.toml` (Version Catalog)
+
+All dependency versions are centralized here. To add a new dependency:
+
+1. **Declare the version** under `[versions]`:
+   ```toml
+   retrofit = "2.9.0"
+   ```
+
+2. **Declare the library** under `[libraries]`:
+   ```toml
+   androidx-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+   ```
+
+3. **Use in `app/build.gradle.kts`**:
+   ```kotlin
+   implementation(libs.androidx.retrofit)
+   ```
+
+### `app/build.gradle.kts` (Module-Level)
+
+Key configuration in the app module:
+
+| Setting | Value | Notes |
+|---|---|---|
+| `compileSdk` | 35 | Target the latest Android APIs |
+| `minSdk` | 24 | Android 7.0 minimum |
+| `targetSdk` | 35 | Target SDK for Google Play |
+| `jvmTarget` | 17 | Must match JDK version |
+| `applicationId` | `com.immersiads.app` (`.debug` suffix for debug builds) |
 
 ---
 
@@ -198,12 +267,28 @@ sealed class Screen(val route: String) {
 
 ---
 
+## Troubleshooting
+
+| Problem | Likely Cause | Solution |
+|---|---|---|
+| `JAVA_HOME is not set` | JDK not installed or not configured | Install JDK 17+ and set `JAVA_HOME`, or open in Android Studio which bundles a JDK |
+| `Android SDK not found` | `ANDROID_HOME` not set | Set `ANDROID_HOME` to your SDK path (see [Prerequisites](#prerequisites)) |
+| `Gradle distribution download failed` | Network issue or blocked URL | Run `bash scripts/diagnose-network.sh`; try a Gradle mirror (see [docs/NETWORK.md](NETWORK.md)) |
+| `Could not resolve all files for configuration` | Missing dependency or network issue | Try `--offline` if you've built before, or check Maven Central / Google Maven access |
+| `Lint found issues` | Code style / correctness warnings | Review `app/build/reports/lint-results-debug.html`; run `./gradlew lintDebug` to see details |
+| `Tests: No tests found` | Wrong test source directory | Ensure test files are in `src/test/` (unit) or `src/androidTest/` (instrumented) |
+| `BUILD FAILED in 9s` | Java version mismatch | AGP 8.7.0 requires JDK 17–21. If you have Java 25+, install JDK 17 and update `JAVA_HOME` |
+| `Configuration cache stale` | Build config changed | Run with `--no-configuration-cache` to rebuild the cache |
+| `Cannot resolve symbol` in IDE | IDE cache out of sync | File → Invalidate Caches → Invalidate and Restart |
+
+---
+
 ## Contributing
 
 1. Fork the repository.
 2. Create a feature branch (`git checkout -b feat/my-feature`).
 3. Make your changes and ensure tests pass.
-4. Run `./gradlew lint` and fix any warnings.
+4. Run `./gradlew lintDebug` (or `bash scripts/lint.sh`) and fix any warnings.
 5. Commit with a descriptive message.
 6. Push and open a Pull Request against `main`.
 

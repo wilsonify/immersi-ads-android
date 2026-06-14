@@ -14,16 +14,19 @@ git clone https://github.com/anomalyco/immersi-ads-android.git
 cd immersi-ads-android
 
 # 2. Check your environment
-bash scripts/setup.sh              # macOS / Linux
-# .\scripts\setup.ps1              # Windows PowerShell
+bash scripts/setup.sh                 # macOS / Linux
+# .\scripts\setup.ps1                 # Windows PowerShell
+# scripts\setup.bat                   # Windows Command Prompt
 
 # 3. Build the app
-bash scripts/build.sh              # macOS / Linux
-# .\scripts\build.ps1              # Windows PowerShell
+bash scripts/build.sh                 # macOS / Linux
+# .\scripts\build.ps1                 # Windows PowerShell
+# scripts\build.bat                   # Windows Command Prompt
 
 # 4. Run tests
-bash scripts/test.sh               # macOS / Linux
-# .\scripts\test.ps1               # Windows PowerShell
+bash scripts/test.sh                  # macOS / Linux
+# .\scripts\test.ps1                  # Windows PowerShell
+# scripts\test.bat                    # Windows Command Prompt
 ```
 
 ---
@@ -73,16 +76,15 @@ The script checks:
 
 ```bash
 # Validate environment
-bash scripts/setup.sh
+bash scripts/setup.sh                  # macOS / Linux
+# .\scripts\setup.ps1                  # Windows
 
 # Build debug APK
-bash scripts/build.sh
+bash scripts/build.sh                  # macOS / Linux
+# .\scripts\build.ps1                  # Windows
 
 # The APK will be at:
 #   app/build/outputs/apk/debug/app-debug.apk
-
-# Install on connected device/emulator
-./gradlew installDebug
 ```
 
 > On the first build, Gradle will download its distribution and all project dependencies. This can take 5–15 minutes depending on your connection.
@@ -91,17 +93,17 @@ bash scripts/build.sh
 
 ## Development Workflow
 
-Scripts are provided for common tasks:
+Scripts are provided for common tasks (use `scripts\<name>.bat` or `.\scripts\<name>.ps1` on Windows):
 
-```bash
-scripts/setup.sh      # Validate prerequisites and environment
-scripts/build.sh       # Build debug APK
-scripts/test.sh        # Run unit tests
-scripts/lint.sh        # Run lint checks
-scripts/verify.sh      # Run lint + tests + build (full check)
-scripts/clean.sh       # Remove build artifacts
-scripts/diagnose-network.sh  # Check connectivity to all required services
-```
+| Task | Command | Description |
+|---|---|---|
+| **Setup** | `bash scripts/setup.sh` | Validate prerequisites and environment |
+| **Build** | `bash scripts/build.sh` | Build debug APK |
+| **Test** | `bash scripts/test.sh` | Run unit tests |
+| **Lint** | `bash scripts/lint.sh` | Run lint checks |
+| **Verify** | `bash scripts/verify.sh` | Run lint + tests + build (full check) |
+| **Clean** | `bash scripts/clean.sh` | Remove build artifacts |
+| **Network diagnostics** | `bash scripts/diagnose-network.sh` | Check connectivity to all required services |
 
 All scripts accept extra Gradle flags. For example:
 
@@ -111,6 +113,8 @@ bash scripts/test.sh --no-daemon           # Tests without Gradle daemon
 bash scripts/verify.sh --offline           # Full verification offline
 ```
 
+**Windows equivalents:** Use `scripts\build.bat --offline` or `.\scripts\build.ps1 --offline` for the same behavior.
+
 ---
 
 ## Network Troubleshooting
@@ -119,26 +123,29 @@ If you are behind a corporate firewall, proxy, or have intermittent internet:
 
 1. **Run diagnostics:**
    ```bash
-   bash scripts/diagnose-network.sh
+   bash scripts/diagnose-network.sh          # macOS / Linux
+   # .\scripts\diagnose-network.ps1          # Windows
    ```
 
 2. **Configure proxy:**
    ```bash
-   export HTTP_PROXY=http://proxy:8080
+   export HTTP_PROXY=http://proxy:8080       # macOS / Linux
    export HTTPS_PROXY=http://proxy:8080
+   # $env:HTTP_PROXY = "http://proxy:8080"   # Windows PowerShell
    ```
 
 3. **Add Gradle proxy** in `gradle.properties`:
    ```properties
-   systemProp.http.proxyHost=proxy
+   systemProp.http.proxyHost=proxy.yourcompany.com
    systemProp.http.proxyPort=8080
-   systemProp.https.proxyHost=proxy
+   systemProp.https.proxyHost=proxy.yourcompany.com
    systemProp.https.proxyPort=8080
    ```
 
 4. **Use offline mode** after an initial successful build:
    ```bash
-   bash scripts/build.sh --offline
+   bash scripts/build.sh --offline           # macOS / Linux
+   # .\scripts\build.ps1 --offline           # Windows
    ```
 
 5. **Use a Gradle mirror** if `services.gradle.org` is blocked — edit `gradle/wrapper/gradle-wrapper.properties`:
@@ -237,6 +244,7 @@ Push / PR
 | [Admin Guide](docs/ADMIN_GUIDE.md) | Admins | CI/CD, release process, signing, configuration |
 | [Architecture](docs/ARCHITECTURE.md) | Developers | Clean Architecture layers, data flow, dependency graph |
 | [Network Guide](docs/NETWORK.md) | Developers | Proxy, DNS, offline mode, Gradle mirror troubleshooting |
+| [Roadmap](docs/ROADMAP.md) | All | Planned features and future direction |
 
 ---
 
@@ -249,6 +257,15 @@ The app ships with sample advertisements in Spanish, French, and German with pre
 ## Roadmap
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for planned features and future direction.
+
+---
+
+## Getting Help
+
+- **Report a bug:** [Open an issue](https://github.com/anomalyco/immersi-ads-android/issues/new)
+- **Feature requests:** [Start a discussion](https://github.com/anomalyco/immersi-ads-android/discussions)
+- **Documentation:** See the [docs/](#documentation) table above
+- **Troubleshooting:** Run `bash scripts/diagnose-network.sh` for network issues, or check [docs/NETWORK.md](docs/NETWORK.md)
 
 ---
 

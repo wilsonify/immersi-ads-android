@@ -32,7 +32,7 @@ The project uses **GitHub Actions** for continuous integration and delivery. Wor
 
 ```
 Trigger (push / PR)
-   └── Lint (./gradlew lint)
+   └── Lint (./gradlew lintDebug)
          └── Unit Tests (./gradlew testDebugUnitTest)
                └── Build Debug APK (./gradlew assembleDebug)
                      └── Upload APK as workflow artifact
@@ -59,8 +59,10 @@ Edit `app/build.gradle.kts`:
 
 ```kotlin
 versionCode = 2   // increment by 1 for each release
-versionName = "1.1.0"  // follow semantic versioning
+versionName = "1.0.1"  // follow semantic versioning
 ```
+
+> See [docs/ROADMAP.md](ROADMAP.md) for the planned version schedule.
 
 ### 3. Create a Signed Release APK
 
@@ -77,31 +79,32 @@ apksigner sign --ks release-keystore.jks \
                --ks-key-alias immersiads \
                --ks-pass pass:<keystore-password> \
                --key-pass pass:<key-password> \
+               --out app/build/outputs/apk/release/app-release.apk \
                app/build/outputs/apk/release/app-release-unsigned.apk
 ```
 
-Output: `app-release-unsigned.apk` is signed in-place.
+Output: `app/build/outputs/apk/release/app-release.apk`
 
 ### 5. Verify
 
 ```bash
-apksigner verify app/build/outputs/apk/release/app-release-unsigned.apk
+apksigner verify app/build/outputs/apk/release/app-release.apk
 ```
 
 ### 6. Create a GitHub Release
 
 ```bash
-gh release create v1.1.0 \
-  --title "v1.1.0" \
+gh release create v1.0.1 \
+  --title "v1.0.1" \
   --notes "Release notes here" \
-  app/build/outputs/apk/release/app-release-unsigned.apk
+  app/build/outputs/apk/release/app-release.apk
 ```
 
 ### 7. Tag the Release
 
 ```bash
-git tag -a v1.1.0 -m "v1.1.0"
-git push origin v1.1.0
+git tag -a v1.0.1 -m "v1.0.1"
+git push origin v1.0.1
 ```
 
 ---
