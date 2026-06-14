@@ -65,6 +65,57 @@ Output: `app/build/outputs/apk/release/app-release-unsigned.apk`
 
 > The release build requires a signing configuration. See [Admin Guide](ADMIN_GUIDE.md#signing) for setup.
 
+### Run on Physical Device
+
+#### 1. Enable Developer Options on the Device
+
+1. Open **Settings** → **About phone** → tap **Build number** 7 times
+2. Go back to **Settings** → **System** → **Developer options**
+3. Enable **USB debugging**
+
+#### 2. Connect and Verify
+
+```bash
+adb devices
+```
+
+Expected output (device serial will vary):
+```
+List of devices attached
+41130DLJH001RS  device
+```
+
+If the device shows as `unauthorized`, check the prompt on the device and tap **Allow**.
+
+#### 3. Install the APK
+
+```bash
+# Using Gradle (builds + installs in one step):
+./gradlew installDebug            # macOS / Linux
+# gradlew.bat installDebug        # Windows
+
+# Or install a pre-built APK via ADB:
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+If multiple devices are connected, specify the target:
+```bash
+adb -s <device-serial> install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+#### 4. Launch the App
+
+```bash
+adb shell am start -n "com.immersiads.app.debug/com.immersiads.app.MainActivity"
+```
+
+#### 5. View Logs
+
+```bash
+adb logcat -v brief | findstr immersi            # Windows
+adb logcat -v brief | grep -i immersi            # macOS / Linux
+```
+
 ### Run on Emulator
 
 #### 1. Create an AVD (first time only)
@@ -316,7 +367,9 @@ sealed class Screen(val route: String) {
 | `Cannot resolve symbol` in IDE                        | IDE cache out of sync                 | File → Invalidate Caches → Invalidate and Restart                                                                  |
 | `Emulator shuts down immediately after starting`      | Process tied to parent shell          | Launch with `emulator -avd <name> &` or `Start-Process` to detach                                                  |
 | `adb: device not found`                               | Emulator not running or still booting | Run `adb devices` to confirm; wait for boot with `adb wait-for-device`                                             |
+| `adb: device unauthorized`                            | USB debugging not authorized          | Check the prompt on the device and tap **Allow**; run `adb kill-server && adb start-server` to retry                 |
 | `adb: failed to install: device is still booting`     | Emulator not fully started            | Wait for `sys.boot_completed=1`: `adb shell getprop sys.boot_completed`                                            |
+| `INSTALL_FAILED_UPDATE_INCOMPATIBLE`                  | App signature mismatch                | Uninstall the existing app first: `adb uninstall com.immersiads.app.debug`                                          |
 | `Emulator: Could not initialize DirectSoundCapture`   | No audio driver (headless)            | Safe to ignore; add `-no-audio` to suppress                                                                        |
 | `Build fails with: 25.0.3 / IllegalArgumentException` | JDK 25 used instead of JDK 17         | Set `JAVA_HOME` to JDK 17 install path; the Kotlin compiler used by AGP 8.7.0 cannot parse JDK 25's version string |
 | `SDK XML version 4 warning during build`              | Newer SDK tools than AGP expects      | Harmless warning; update AGP to latest or ignore                                                                   |
