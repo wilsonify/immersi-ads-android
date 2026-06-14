@@ -300,22 +300,26 @@ private fun PlayerVideoContent(
 private fun PlayerSubtitleSection(
     subtitlesEnabled: Boolean,
     currentSubtitle: String?,
-    onWordClick: (String) -> Unit
+    onWordClick: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     if (subtitlesEnabled && currentSubtitle != null) {
-        SubtitleBar(
-            subtitle = currentSubtitle,
-            onWordClick = onWordClick
-        )
+        Box(modifier = modifier) {
+            SubtitleBar(
+                subtitle = currentSubtitle,
+                onWordClick = onWordClick
+            )
+        }
     }
 }
 
 @Composable
 private fun PlayerAdInfo(
-    advertisement: com.immersiads.app.data.model.Advertisement?
+    advertisement: com.immersiads.app.data.model.Advertisement?,
+    modifier: Modifier = Modifier
 ) {
     advertisement?.let { ad ->
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = modifier.padding(16.dp)) {
             Text(
                 text = ad.brand,
                 style = MaterialTheme.typography.labelLarge,
@@ -339,21 +343,25 @@ private fun PlayerContent(
     advertisement: com.immersiads.app.data.model.Advertisement?,
     onWordClick: (String) -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
     ) {
         PlayerVideoContent(
-            modifier = Modifier.fillMaxWidth().weight(1f),
+            modifier = Modifier.fillMaxSize(),
             exoPlayer = exoPlayer
         )
         PlayerSubtitleSection(
             subtitlesEnabled = subtitlesEnabled,
             currentSubtitle = currentSubtitle,
-            onWordClick = onWordClick
+            onWordClick = onWordClick,
+            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
         )
-        PlayerAdInfo(advertisement = advertisement)
+        PlayerAdInfo(
+            advertisement = advertisement,
+            modifier = Modifier.align(Alignment.TopStart)
+        )
     }
 }
 
