@@ -10,7 +10,10 @@ data class Advertisement(
     val durationMs: Long,
     val subtitles: List<Subtitle> = emptyList(),
     val tags: List<String> = emptyList(),
-    val difficulty: DifficultyLevel = DifficultyLevel.BEGINNER
+    val difficulty: DifficultyLevel = DifficultyLevel.BEGINNER,
+    val license: String = "CC-BY 3.0",
+    val attribution: String = "Blender Foundation",
+    val attributionUrl: String = "https://peach.blender.org/"
 )
 
 enum class DifficultyLevel {
