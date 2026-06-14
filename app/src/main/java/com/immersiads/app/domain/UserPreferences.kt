@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
-class UserPreferences(private val context: Context) {
+class UserPreferences(private val dataStore: DataStore<Preferences>) {
+
+    constructor(context: Context) : this(context.dataStore)
 
     companion object {
         val KEY_NATIVE_LANGUAGE = stringPreferencesKey("native_language")
@@ -29,49 +31,49 @@ class UserPreferences(private val context: Context) {
         val KEY_DARK_MODE = booleanPreferencesKey("dark_mode")
     }
 
-    val nativeLanguage: Flow<String> = context.dataStore.data.map { it[KEY_NATIVE_LANGUAGE] ?: "en" }
-    val targetLanguage: Flow<String> = context.dataStore.data.map { it[KEY_TARGET_LANGUAGE] ?: "es" }
-    val isOnboardingComplete: Flow<Boolean> = context.dataStore.data.map { it[KEY_ONBOARDING_COMPLETE] ?: false }
-    val playbackSpeed: Flow<Float> = context.dataStore.data.map { it[KEY_PLAYBACK_SPEED] ?: 1.0f }
-    val subtitlesEnabled: Flow<Boolean> = context.dataStore.data.map { it[KEY_SUBTITLES_ENABLED] ?: true }
-    val streakCount: Flow<Int> = context.dataStore.data.map { it[KEY_STREAK_COUNT] ?: 0 }
-    val totalAdsWatched: Flow<Int> = context.dataStore.data.map { it[KEY_TOTAL_ADS_WATCHED] ?: 0 }
-    val isDarkMode: Flow<Boolean> = context.dataStore.data.map { it[KEY_DARK_MODE] ?: false }
+    val nativeLanguage: Flow<String> = dataStore.data.map { it[KEY_NATIVE_LANGUAGE] ?: "en" }
+    val targetLanguage: Flow<String> = dataStore.data.map { it[KEY_TARGET_LANGUAGE] ?: "es" }
+    val isOnboardingComplete: Flow<Boolean> = dataStore.data.map { it[KEY_ONBOARDING_COMPLETE] ?: false }
+    val playbackSpeed: Flow<Float> = dataStore.data.map { it[KEY_PLAYBACK_SPEED] ?: 1.0f }
+    val subtitlesEnabled: Flow<Boolean> = dataStore.data.map { it[KEY_SUBTITLES_ENABLED] ?: true }
+    val streakCount: Flow<Int> = dataStore.data.map { it[KEY_STREAK_COUNT] ?: 0 }
+    val totalAdsWatched: Flow<Int> = dataStore.data.map { it[KEY_TOTAL_ADS_WATCHED] ?: 0 }
+    val isDarkMode: Flow<Boolean> = dataStore.data.map { it[KEY_DARK_MODE] ?: false }
 
     suspend fun setNativeLanguage(code: String) {
-        context.dataStore.edit { it[KEY_NATIVE_LANGUAGE] = code }
+        dataStore.edit { it[KEY_NATIVE_LANGUAGE] = code }
     }
 
     suspend fun setTargetLanguage(code: String) {
-        context.dataStore.edit { it[KEY_TARGET_LANGUAGE] = code }
+        dataStore.edit { it[KEY_TARGET_LANGUAGE] = code }
     }
 
     suspend fun setOnboardingComplete(complete: Boolean) {
-        context.dataStore.edit { it[KEY_ONBOARDING_COMPLETE] = complete }
+        dataStore.edit { it[KEY_ONBOARDING_COMPLETE] = complete }
     }
 
     suspend fun setPlaybackSpeed(speed: Float) {
-        context.dataStore.edit { it[KEY_PLAYBACK_SPEED] = speed }
+        dataStore.edit { it[KEY_PLAYBACK_SPEED] = speed }
     }
 
     suspend fun setSubtitlesEnabled(enabled: Boolean) {
-        context.dataStore.edit { it[KEY_SUBTITLES_ENABLED] = enabled }
+        dataStore.edit { it[KEY_SUBTITLES_ENABLED] = enabled }
     }
 
     suspend fun incrementStreak() {
-        context.dataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             prefs[KEY_STREAK_COUNT] = (prefs[KEY_STREAK_COUNT] ?: 0) + 1
             prefs[KEY_LAST_ACTIVE_DATE] = System.currentTimeMillis()
         }
     }
 
     suspend fun incrementAdsWatched() {
-        context.dataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             prefs[KEY_TOTAL_ADS_WATCHED] = (prefs[KEY_TOTAL_ADS_WATCHED] ?: 0) + 1
         }
     }
 
     suspend fun setDarkMode(enabled: Boolean) {
-        context.dataStore.edit { it[KEY_DARK_MODE] = enabled }
+        dataStore.edit { it[KEY_DARK_MODE] = enabled }
     }
 }
