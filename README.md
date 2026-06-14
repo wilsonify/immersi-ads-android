@@ -27,6 +27,11 @@ bash scripts/build.sh                 # macOS / Linux
 bash scripts/test.sh                  # macOS / Linux
 # .\scripts\test.ps1                  # Windows PowerShell
 # scripts\test.bat                    # Windows Command Prompt
+
+# 5. Run on emulator
+bash scripts/run.sh                   # macOS / Linux
+# .\scripts\run.ps1                   # Windows PowerShell
+# scripts\run.bat                     # Windows Command Prompt
 ```
 
 ---
@@ -102,6 +107,7 @@ Scripts are provided for common tasks (use `scripts\<name>.bat` or `.\scripts\<n
 | **Test** | `bash scripts/test.sh` | Run unit tests |
 | **Lint** | `bash scripts/lint.sh` | Run lint checks |
 | **Verify** | `bash scripts/verify.sh` | Run lint + tests + build (full check) |
+| **Run** | `bash scripts/run.sh` | Install APK and launch on emulator/device |
 | **Clean** | `bash scripts/clean.sh` | Remove build artifacts |
 | **Network diagnostics** | `bash scripts/diagnose-network.sh` | Check connectivity to all required services |
 
@@ -168,6 +174,8 @@ See [docs/NETWORK.md](docs/NETWORK.md) for comprehensive troubleshooting.
 | `Lint: abortOnError` | Lint issues are informational — review `app/build/reports/lint-results-debug.html` |
 | `Tests: No tests found` | Ensure test files are in `src/test/` directory |
 | `Configuration cache issue` | Run with `--no-configuration-cache` to refresh |
+| `Emulator shuts down immediately` | Launch detached: `emulator -avd <name> &` or use `Start-Process` |
+| `adb: device not found` | Emulator not running; run `adb devices` to check |
 
 ---
 

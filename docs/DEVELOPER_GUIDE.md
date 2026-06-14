@@ -65,12 +65,46 @@ Output: `app/build/outputs/apk/release/app-release-unsigned.apk`
 
 > The release build requires a signing configuration. See [Admin Guide](ADMIN_GUIDE.md#signing) for setup.
 
-### Install on Device / Emulator
+### Run on Emulator
+
+#### 1. Create an AVD (first time only)
 
 ```bash
+# Using the Android CLI (Windows):
+android emulator create medium_phone
+
+# Or using avdmanager (cross-platform):
+avdmanager create avd -n medium_phone -k "system-images;android-35;google_apis;x86_64"
+```
+
+#### 2. Start the Emulator
+
+```bash
+# Background process (keeps running after terminal closes):
+emulator -avd medium_phone -no-boot-anim -gpu auto -memory 2048 &
+
+# Or via Android CLI (blocks until boot completes):
+android emulator start medium_phone
+```
+
+#### 3. Install the APK
+
+```bash
+# Using Gradle (builds + installs in one step):
 ./gradlew installDebug            # macOS / Linux
 # gradlew.bat installDebug        # Windows
+
+# Or install a pre-built APK via ADB:
+adb -s emulator-5554 install -r app/build/outputs/apk/debug/app-debug.apk
 ```
+
+#### 4. Launch the App
+
+```bash
+adb shell am start -n "com.immersiads.app.debug/com.immersiads.app.MainActivity"
+```
+
+> **Tip:** Use `android emulator list` to view created AVDs, and `android emulator stop medium_phone` to shut down.
 
 ---
 
@@ -280,6 +314,10 @@ sealed class Screen(val route: String) {
 | `BUILD FAILED in 9s` | Java version mismatch | AGP 8.7.0 requires JDK 17–21. If you have Java 25+, install JDK 17 and update `JAVA_HOME` |
 | `Configuration cache stale` | Build config changed | Run with `--no-configuration-cache` to rebuild the cache |
 | `Cannot resolve symbol` in IDE | IDE cache out of sync | File → Invalidate Caches → Invalidate and Restart |
+| `Emulator shuts down immediately after starting` | Process tied to parent shell | Launch with `emulator -avd <name> &` or `Start-Process` to detach |
+| `adb: device not found` | Emulator not running or still booting | Run `adb devices` to confirm; wait for boot with `adb wait-for-device` |
+| `adb: failed to install: device is still booting` | Emulator not fully started | Wait for `sys.boot_completed=1`: `adb shell getprop sys.boot_completed` |
+| `Emulator: Could not initialize DirectSoundCapture` | No audio driver (headless) | Safe to ignore; add `-no-audio` to suppress |
 
 ---
 
